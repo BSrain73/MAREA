@@ -92,10 +92,10 @@ valores_evento2 = [v * 0.85 for v in values]
 bar_width = 0.5
 fig, ax = plt.subplots(figsize=(10, 6))
 bottom = [0] * len(eventos)
-for i, label in enumerate(labels):
-vals = [valores_evento1[i], valores_evento2[i]]
-ax.bar(eventos, vals, bar_width, label=label, bottom=bottom)
-bottom = [sum(x) for x in zip(bottom, vals)]
+    for i, label in enumerate(labels):
+    vals = [valores_evento1[i], valores_evento2[i]]
+    ax.bar(eventos, vals, bar_width, label=label, bottom=bottom)
+    bottom = [sum(x) for x in zip(bottom, vals)]
 ax.set_ylabel("Volumen (L)")
 ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
 ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
