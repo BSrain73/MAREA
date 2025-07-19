@@ -80,10 +80,10 @@ fig, ax = plt.subplots()
 ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
 ax.axis("equal")
 st.pyplot(fig)
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.bar(labels, values, color="#6baed6")
-    ax.set_title("Distribución del Volumen por Componente", fontsize=14)
-    ax.set_ylabel("Volumen (L)")
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.bar(labels, values, color="#6baed6")
+ax.set_title("Distribución del Volumen por Componente", fontsize=14)
+ax.set_ylabel("Volumen (L)")
     ax.set_xticklabels(labels, rotation=45, ha="right")
     st.pyplot(fig)
     eventos = ["Evento 1", "Evento 2"]
@@ -137,6 +137,7 @@ elif chart_type == "Stacked Barplot":
     ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
     ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
+
 
 
 
