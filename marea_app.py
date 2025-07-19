@@ -76,9 +76,9 @@ st.write(f"Volumen biodegradado: {V_bio:.1f} L")
 st.write(f"Volumen remanente no tratado: {V_residual:.1f} L")
 st.markdown("## Balance de Masa del Hidrocarburo Derramado")
 # ==========================
-    fig, ax = plt.subplots()
-    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
-    ax.axis("equal")
+fig, ax = plt.subplots()
+ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+ax.axis("equal")
     st.pyplot(fig)
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.bar(labels, values, color="#6baed6")
@@ -137,6 +137,7 @@ elif chart_type == "Stacked Barplot":
     ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
     ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
+
 
 
 
