@@ -92,40 +92,12 @@ st.write(f"Volumen emulsificado (no pérdida): {V_emul:.1f} L")
 st.write(f"Volumen biodegradado: {V_bio:.1f} L")
 st.write(f"Volumen remanente no tratado: {V_residual:.1f} L")
 
-st.markdown("### 7. Visualización del Balance de Masa")
-labels = ["Absorbentes", "Skimmers", "Evaporado", "Dispersado", "Disuelto", "Biodegradado", "Remanente"]
-values = [V_rec, V_skimmer, V_evap, V_disp, V_diss, V_bio, V_residual]
-
-fig, ax = plt.subplots()
-ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90)
-ax.axis("equal")
-st.pyplot(fig)
+st.markdown("##
 
 
 
 # ==========================
-# 7. Visualización avanzada del Balance de Masa
-# ==========================
-st.subheader("7. Visualización del Balance de Masa")
 
-chart_type = st.selectbox("Selecciona el tipo de gráfico", ["Gráfico de torta", "Barplot", "Stacked Barplot"])
-
-labels = ["Absorbentes", "Skimmers", "Evaporado", "Dispersado", "Disuelto", "Biodegradado", "Remanente"]
-values = [V_rec, V_skimmer, V_evap, V_disp, V_diss, V_bio, V_residual]
-
-import matplotlib.pyplot as plt
-
-if chart_type == "Gráfico de torta":
-    colors = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#e5c494"]
-    fig, ax = plt.subplots(figsize=(8, 6))
-    wedges, texts, autotexts = ax.pie(
-        values, labels=None, autopct='%1.1f%%', startangle=140,
-        colors=colors, textprops={'fontsize': 10}, wedgeprops={'linewidth': 1, 'edgecolor': 'white'}
-    )
-    ax.legend(wedges, labels, title="Componentes", loc="center left", bbox_to_anchor=(1, 0.5), fontsize=10)
-    ax.set_title("Balance de Masa del Hidrocarburo Derramado", fontsize=14)
-    ax.axis("equal")
-    st.pyplot(fig)
 
 elif chart_type == "Barplot":
     fig, ax = plt.subplots(figsize=(10, 5))
