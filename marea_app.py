@@ -92,7 +92,7 @@ st.write(f"Volumen emulsificado (no pérdida): {V_emul:.1f} L")
 st.write(f"Volumen biodegradado: {V_bio:.1f} L")
 st.write(f"Volumen remanente no tratado: {V_residual:.1f} L")
 
-st.markdown("##
+st.markdown("## Balance de Masa del Hidrocarburo Derramado")
 
 
 
@@ -122,5 +122,6 @@ elif chart_type == "Stacked Barplot":
     ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
     ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
+
 
 
