@@ -99,6 +99,12 @@ st.markdown("## Balance de Masa del Hidrocarburo Derramado")
 # ==========================
 
 
+if chart_type == "Torta":
+    fig, ax = plt.subplots()
+    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+    ax.axis("equal")
+    st.pyplot(fig)
+
 elif chart_type == "Barplot":
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.bar(labels, values, color="#6baed6")
@@ -122,6 +128,7 @@ elif chart_type == "Stacked Barplot":
     ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
     ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
+
 
 
 
