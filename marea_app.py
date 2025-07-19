@@ -99,6 +99,47 @@ st.markdown("## Balance de Masa del Hidrocarburo Derramado")
 # ==========================
 
 
+    fig, ax = plt.subplots()
+    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+    ax.axis("equal")
+    st.pyplot(fig)
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.bar(labels, values, color="#6baed6")
+    ax.set_title("Distribución del Volumen por Componente", fontsize=14)
+    ax.set_ylabel("Volumen (L)")
+    ax.set_xticklabels(labels, rotation=45, ha="right")
+    st.pyplot(fig)
+
+    eventos = ["Evento 1", "Evento 2"]
+    valores_evento1 = values
+    valores_evento2 = [v * 0.85 for v in values]
+    bar_width = 0.5
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bottom = [0] * len(eventos)
+    for i, label in enumerate(labels):
+        vals = [valores_evento1[i], valores_evento2[i]]
+        ax.bar(eventos, vals, bar_width, label=label, bottom=bottom)
+        bottom = [sum(x) for x in zip(bottom, vals)]
+    ax.set_ylabel("Volumen (L)")
+    ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
+    ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
+    st.pyplot(fig)
+
+# ==========================
+# 7. Visualización del Balance de Masa
+# ==========================
+
+st.subheader("7. Visualización del Balance de Masa")
+
+chart_type = st.selectbox(
+    "Selecciona el tipo de gráfico",
+    ["Torta", "Barplot", "Stacked Barplot"]
+)
+
+labels = ["Absorbentes", "Skimmers", "Evaporado", "Dispersado", "Disuelto", "Biodegradado", "Remanente"]
+values = [V_rec, V_skimmer, V_evap, V_disp, V_diss, V_bio, V_residual]
+
 if chart_type == "Torta":
     fig, ax = plt.subplots()
     ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
@@ -128,6 +169,7 @@ elif chart_type == "Stacked Barplot":
     ax.set_title("Comparación de Balance de Masa entre Eventos", fontsize=14)
     ax.legend(title="Componente", bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
+
 
 
 
