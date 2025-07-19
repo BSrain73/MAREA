@@ -11,8 +11,8 @@ V_d = Q * t
 st.success(f"Volumen total derramado: {V_d:.1f} L")
 st.markdown("### 2. Métodos utilizados")
 metodos = st.multiselect(
-    "Seleccione los métodos aplicados:",
-    ["Barreras de contención", "Skimmers", "Absorbentes", "Dispersantes"]
+"Seleccione los métodos aplicados:",
+["Barreras de contención", "Skimmers", "Absorbentes", "Dispersantes"]
 )
 V_skimmer = 0
 V_rec = 0
@@ -25,10 +25,9 @@ if "Absorbentes" in metodos:
     C_abs = st.number_input("Capacidad máxima de absorción (L/kg)", value=4.0)
     eta = st.slider("Porcentaje de saturación efectiva (%)", 0, 100, 85) / 100
     V_rec = m_abs * C_abs * eta
-if "Dispersantes" in metodos:
-    aumento_diss = st.slider("Aumento estimado de disolución por dispersantes (%)", 0, 100, 20)
-    factor_dispersante = 1 + aumento_diss / 100
-st.markdown("### 3. Condiciones ambientales")
+    if "Dispersantes" in metodos:
+        aumento_diss = st.slider("Aumento estimado de disolución por dispersantes (%)", 0, 100, 20)
+        factor_dispersante = 1 + aumento_diss / 100
 v_viento = st.slider("Velocidad del viento (m/s)", 0.0, 20.0, 5.0)
 altura_ola = st.slider("Altura significativa de ola (m)", 0.0, 5.0, 1.5)
 T_agua = st.slider("Temperatura del agua (°C)", 0, 30, 14)
@@ -92,7 +91,7 @@ valores_evento2 = [v * 0.85 for v in values]
 bar_width = 0.5
 fig, ax = plt.subplots(figsize=(10, 6))
 bottom = [0] * len(eventos)
-    for i, label in enumerate(labels):
+for i, label in enumerate(labels):
     vals = [valores_evento1[i], valores_evento2[i]]
     ax.bar(eventos, vals, bar_width, label=label, bottom=bottom)
     bottom = [sum(x) for x in zip(bottom, vals)]
@@ -111,13 +110,13 @@ chart_type = st.selectbox(
 labels = ["Absorbentes", "Skimmers", "Evaporado", "Dispersado", "Disuelto", "Biodegradado", "Remanente"]
 values = [V_rec, V_skimmer, V_evap, V_disp, V_diss, V_bio, V_residual]
 if chart_type == "Torta":
-fig, ax = plt.subplots()
-ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
-ax.axis("equal")
-st.pyplot(fig)
+    fig, ax = plt.subplots()
+    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+    ax.axis("equal")
+    st.pyplot(fig)
 elif chart_type == "Barplot":
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.bar(labels, values, color="#6baed6")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.bar(labels, values, color="#6baed6")
 ax.set_title("Distribución del Volumen por Componente", fontsize=14)
 ax.set_ylabel("Volumen (L)")
 ax.set_xticklabels(labels, rotation=45, ha="right")
