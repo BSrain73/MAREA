@@ -1,10 +1,24 @@
 
 import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 
 st.set_page_config(layout="wide")
-st.title("Balance de Masa del Hidrocarburo Derramado")
+st.title("MAREA – Modelo de Análisis de Recuperación y Estimación de Absorción")
+
+# === SELECCIÓN DEL CRUDOS CON k AUTOMÁTICO ===
+crudos_df = pd.read_csv("data/crudos_con_k_biodegradacion.csv")
+
+st.markdown("### Selección del tipo de hidrocarburo")
+crudo_seleccionado = st.selectbox("Seleccione un hidrocarburo:", crudos_df["Name"].tolist())
+
+crudo_info = crudos_df[crudos_df["Name"] == crudo_seleccionado].iloc[0]
+api = crudo_info["API"]
+k_bio = crudo_info["k_biodegradación_día⁻¹"]
+
+st.write(f"**Grado API:** {api}")
+st.write(f"**Constante de biodegradación k:** {k_bio:.3f} día⁻¹")
+st.caption(f"Tipo: {crudo_info['Type']} | Fuente: {crudo_info['Reference']}")
 
 # 1. Datos del derrame
 st.markdown("### 1. Datos del derrame")
@@ -44,32 +58,21 @@ v_viento = st.slider("Velocidad del viento (m/s)", 0.0, 15.0, 5.0)
 altura_ola = st.slider("Altura significativa de ola (m)", 0.0, 5.0, 1.5)
 T_agua = st.slider("Temperatura del agua (°C)", 0, 30, 14)
 
-# 4. Selección de hidrocarburo
-st.markdown("### 4. Tipo de hidrocarburo")
-tipos = {
-    "Diésel": 0.05,
-    "Crudo liviano": 0.02,
-    "Crudo pesado": 0.01
-}
-tipo_hidrocarburo = st.selectbox("Seleccione el tipo de hidrocarburo derramado:", list(tipos.keys()))
-k_bio = tipos[tipo_hidrocarburo]
-
-# 5. Estimación de pérdidas físicas
-st.markdown("### 5. Estimación de pérdidas físicas")
+# 4. Estimación de pérdidas físicas
+st.markdown("### 4. Estimación de pérdidas físicas")
 t_horas = t / 60
 f_evap = 0.0001 * (v_viento ** 0.78) * (t_horas ** 0.5)
 f_evap = min(f_evap, 0.9)
 V_evap = V_d * f_evap
-
 V_disperso = 0.02 * V_d * factor_dispersante
 V_disu = 0.01 * V_d
-V_bio = V_d * (1 - pow(2.71828, -k_bio * t_horas))
+V_bio = V_d * (1 - pow(2.71828, -k_bio * t_horas))  # modelo cinético de primer orden
 
-# 6. Remanente
+# 5. Remanente
 V_rem = V_d - (V_skimmer + V_rec + V_evap + V_disperso + V_disu + V_bio)
 
-# 7. Resultados y visualización
-st.markdown("### 6. Resultados del balance de masa")
+# 6. Resultados
+st.markdown("### 5. Resultados del balance de masa")
 resultados = {
     "Skimmers": V_skimmer,
     "Absorbentes": V_rec,
@@ -79,10 +82,12 @@ resultados = {
     "Biodegradado": V_bio,
     "Remanente": V_rem
 }
+
 df = pd.DataFrame.from_dict(resultados, orient='index', columns=["Volumen (L)"])
 st.dataframe(df)
 
-st.markdown("### 7. Visualización del Balance de Masa")
+# 7. Visualización
+st.markdown("### 6. Visualización del Balance de Masa")
 chart_type = st.radio("Seleccione el tipo de gráfico:", ["Torta", "Barplot", "Stacked Barplot"])
 
 labels = list(resultados.keys())
@@ -90,7 +95,7 @@ values = list(resultados.values())
 
 if chart_type == "Torta":
     fig, ax = plt.subplots()
-    wedges, texts, autotexts = ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90, textprops={'fontsize': 10})
+    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90, textprops={'fontsize': 10})
     ax.axis("equal")
     st.pyplot(fig)
 
@@ -99,7 +104,6 @@ elif chart_type == "Barplot":
     ax.bar(labels, values)
     ax.set_ylabel("Volumen (L)")
     ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=9)
-    ax.set_title("Distribución del Volumen", fontsize=12)
     st.pyplot(fig)
 
 elif chart_type == "Stacked Barplot":
@@ -110,9 +114,9 @@ elif chart_type == "Stacked Barplot":
         ax.bar(["Total"], [values[i]], bottom=bottom, label=labels[i])
         bottom += values[i]
     ax.set_ylabel("Volumen (L)")
-    ax.set_title("Balance de Masa Apilado", fontsize=12)
-    ax.legend()
+    ax.legend(fontsize=8)
     st.pyplot(fig)
+
 
 
 
