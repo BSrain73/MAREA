@@ -10,7 +10,6 @@ st.title("Balance de Masa del Hidrocarburo Derramado")
 st.markdown("### 1. Datos del derrame")
 Q = st.number_input("Caudal de derrame (L/min)", min_value=0.0, value=50.0)
 t = st.number_input("Duración del derrame (min)", min_value=0.0, value=60.0)
-
 V_d = Q * t
 st.success(f"**Volumen total derramado: {V_d:.1f} L**")
 
@@ -40,11 +39,23 @@ if "Dispersantes" in metodos:
     factor_dispersante = 1 + aumento_diss / 100
 
 # 3. Parámetros físicos
+st.markdown("### 3. Parámetros físicos")
 v_viento = st.slider("Velocidad del viento (m/s)", 0.0, 15.0, 5.0)
 altura_ola = st.slider("Altura significativa de ola (m)", 0.0, 5.0, 1.5)
 T_agua = st.slider("Temperatura del agua (°C)", 0, 30, 14)
 
-st.markdown("### 4. Estimación de pérdidas físicas")
+# 4. Selección de hidrocarburo
+st.markdown("### 4. Tipo de hidrocarburo")
+tipos = {
+    "Diésel": 0.05,
+    "Crudo liviano": 0.02,
+    "Crudo pesado": 0.01
+}
+tipo_hidrocarburo = st.selectbox("Seleccione el tipo de hidrocarburo derramado:", list(tipos.keys()))
+k_bio = tipos[tipo_hidrocarburo]
+
+# 5. Estimación de pérdidas físicas
+st.markdown("### 5. Estimación de pérdidas físicas")
 t_horas = t / 60
 f_evap = 0.0001 * (v_viento ** 0.78) * (t_horas ** 0.5)
 f_evap = min(f_evap, 0.9)
@@ -52,12 +63,12 @@ V_evap = V_d * f_evap
 
 V_disperso = 0.02 * V_d * factor_dispersante
 V_disu = 0.01 * V_d
-V_bio = 0.005 * V_d
+V_bio = V_d * (1 - pow(2.71828, -k_bio * t_horas))
 
-# 5. Remanente
+# 6. Remanente
 V_rem = V_d - (V_skimmer + V_rec + V_evap + V_disperso + V_disu + V_bio)
 
-# 6. Resultados
+# 7. Resultados y visualización
 st.markdown("### 6. Resultados del balance de masa")
 resultados = {
     "Skimmers": V_skimmer,
@@ -68,13 +79,10 @@ resultados = {
     "Biodegradado": V_bio,
     "Remanente": V_rem
 }
-
 df = pd.DataFrame.from_dict(resultados, orient='index', columns=["Volumen (L)"])
 st.dataframe(df)
 
-# 7. Visualización
 st.markdown("### 7. Visualización del Balance de Masa")
-
 chart_type = st.radio("Seleccione el tipo de gráfico:", ["Torta", "Barplot", "Stacked Barplot"])
 
 labels = list(resultados.keys())
@@ -82,7 +90,7 @@ values = list(resultados.values())
 
 if chart_type == "Torta":
     fig, ax = plt.subplots()
-    ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+    wedges, texts, autotexts = ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90, textprops={'fontsize': 10})
     ax.axis("equal")
     st.pyplot(fig)
 
@@ -90,7 +98,8 @@ elif chart_type == "Barplot":
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.bar(labels, values)
     ax.set_ylabel("Volumen (L)")
-    ax.set_xticklabels(labels, rotation=45, ha="right")
+    ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=9)
+    ax.set_title("Distribución del Volumen", fontsize=12)
     st.pyplot(fig)
 
 elif chart_type == "Stacked Barplot":
@@ -101,6 +110,7 @@ elif chart_type == "Stacked Barplot":
         ax.bar(["Total"], [values[i]], bottom=bottom, label=labels[i])
         bottom += values[i]
     ax.set_ylabel("Volumen (L)")
+    ax.set_title("Balance de Masa Apilado", fontsize=12)
     ax.legend()
     st.pyplot(fig)
 
